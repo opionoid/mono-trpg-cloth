@@ -26,9 +26,9 @@
               v-text-field(v-model="MP" readonly outlined dense label="MP")
           v-row(justify="center")
             v-col.py-1(cols="6")
-              v-text-field(v-model="physicalAttack" readonly outlined dense label="物理")
+              v-text-field(v-model="physicalAbility" readonly outlined dense label="物理")
             v-col.py-1(cols="6")
-              v-text-field(v-model="magicalAttack" readonly outlined dense label="魔法")
+              v-text-field(v-model="magicAbility" readonly outlined dense label="魔法")
           v-row(justify="center")
             v-col.py-1(cols="6")
               v-text-field(v-model="deft" readonly outlined dense label="技巧")
@@ -49,7 +49,7 @@
               item-text="name"
               item-value="id"
               label="武器"
-              :hint="`威力${weapons[currentWeaponId].basePotency}, 物理${weapons[currentWeaponId].physicalRatio * 100}, 魔法${weapons[currentWeaponId].magicalRatio * 100}, 技巧${weapons[currentWeaponId].deftRatio * 100}`"
+              :hint="`威力${weapons[currentWeaponId].basePotency}, 物理${weapons[currentWeaponId].physicalRatio * 100}, 魔法${weapons[currentWeaponId].magicRatio * 100}, 技巧${weapons[currentWeaponId].deftRatio * 100}`"
               persistent-hint
             )
           v-col(cols="6")
@@ -103,11 +103,12 @@ export default class Character extends Vue {
   currentWeaponId: number = 0;
   weapons = [
     {
+      id: "",
       name: "",
       description: "",
       basePotency: 0,
       physicalRatio: 0, // 物理攻撃の，威力への反映率
-      magicalRatio: 0, // 魔法攻撃の，威力への反映率
+      magicRatio: 0, // 魔法攻撃の，威力への反映率
       deftRatio: 0, // 技巧の，クリティカル率に対する 反映率
       /**
        * skills[] としなかったのは this.$set 等を用いずに
@@ -152,13 +153,21 @@ export default class Character extends Vue {
   currentWeaponStoneId: number = 0;
   weaponStones = [
     {
+      id: 0,
       name: "",
       description: "",
       potencyRatio: 1,
       skill1Ratio: 1,
       skill2Ratio: 1,
       skill3Ratio: 1,
-      criticalRate: 0
+      criticalRate: 0,
+      skill1CriticalRate: 0,
+      skill2CriticalRate: 0,
+      skill3CriticalRate: 0,
+      changedTarget: "",
+      skill1ChangedTarget: "",
+      skill2ChangedTarget: "",
+      skill3ChangedTarget: ""
     }
   ];
   /**
@@ -167,6 +176,7 @@ export default class Character extends Vue {
   currentLanternId: number = 0;
   lanterns = [
     {
+      id: 0,
       name: "",
       description: "",
       skill: {
@@ -179,11 +189,31 @@ export default class Character extends Vue {
   /**
    * 灰結晶
    */
+  currentLanternStoneId: number = 0;
+  lanternStones = [
+    {
+      id: 0,
+      name: "",
+      description: "",
+      augmented___1: 0,
+      augmented___2: 0,
+      augmented___3: 0,
+      augmented___4: 0,
+      augmented___5: 0,
+      augmentedCrit___1: 0,
+      augmentedCrit___2: 0,
+      augmentedCrit___3: 0,
+      augmentedCrit___4: 0,
+      augmentedCrit___5: 0
+    }
+  ];
   /**
    * 指輪
    */
+  currentRingId: number = 0;
   rings = [
     {
+      id: 0,
       name: "",
       description: "",
       skill: {
@@ -201,6 +231,17 @@ export default class Character extends Vue {
   /**
    * 蒼結晶
    */
+  currentRingStoneId: number = 0;
+  ringStones = [
+    {
+      id: 0,
+      name: "",
+      description: "",
+      ultRatio: 1,
+      ultCriticalRate: 0,
+      ultChangedTargetArea: ""
+    }
+  ];
 
   get level(): number {
     const level = this.vit + this.str + this.dex + this.pow;
@@ -215,11 +256,17 @@ export default class Character extends Vue {
   get MP(): number {
     return Math.floor(this.growthCurve(this.pow, 0.5, 0.3, 0.1, 0.1));
   }
-  get physicalAttack(): number {
-    return this.growthCurve(this.str, 8, 4, 3, 1) + Math.floor(this.growthCurve(this.dex, 0.5, 0.4, 0.3, 0.2));
+  get physicalAbility(): number {
+    return (
+      this.growthCurve(this.str, 8, 4, 3, 1) +
+      Math.floor(this.growthCurve(this.dex, 0.5, 0.4, 0.3, 0.2))
+    );
   }
-  get magicalAttack(): number {
-    return this.growthCurve(this.pow, 5, 8, 5, 1) + Math.floor(this.growthCurve(this.dex, 0.5, 0.4, 0.3, 0.2));
+  get magicAbility(): number {
+    return (
+      this.growthCurve(this.pow, 5, 8, 5, 1) +
+      Math.floor(this.growthCurve(this.dex, 0.5, 0.4, 0.3, 0.2))
+    );
   }
   get deft(): number {
     return this.growthCurve(this.dex, 8, 4, 2, 1);
@@ -229,18 +276,18 @@ export default class Character extends Vue {
   }
   get potency(): number {
     return Math.floor(
-      (
-        this.weapons[this.currentWeaponId].basePotency +
-        this.weapons[this.currentWeaponId].physicalRatio * this.physicalAttack +
-        this.weapons[this.currentWeaponId].magicalRatio * this.magicalAttack
-      ) * this.weaponStones[this.currentWeaponStoneId].potencyRatio
+      (this.weapons[this.currentWeaponId].basePotency +
+        this.weapons[this.currentWeaponId].physicalRatio *
+          this.physicalAbility +
+        this.weapons[this.currentWeaponId].magicRatio * this.magicAbility) *
+        this.weaponStones[this.currentWeaponStoneId].potencyRatio
     );
   }
   get criticalRate(): number {
     return Math.floor(
       this.weapons[this.currentWeaponId].deftRatio * this.deft * 0.32 +
-      this.weaponStones[this.currentWeaponStoneId].criticalRate
-    )
+        this.weaponStones[this.currentWeaponStoneId].criticalRate
+    );
   }
 
   growthCurve(
@@ -269,13 +316,13 @@ export default class Character extends Vue {
   mounted() {
     db.collection("weapons")
       .get()
-      .then((querySnapshot) => {
-        let tmpWeapons: any = []
-        querySnapshot.forEach((doc) => {
-          tmpWeapons.push(doc.data())
+      .then(querySnapshot => {
+        let tmpWeapons: any = [];
+        querySnapshot.forEach(doc => {
+          tmpWeapons.push(doc.data());
         });
-        this.weapons = tmpWeapons
-        console.log(this.weapons)
+        this.weapons = tmpWeapons;
+        console.log(this.weapons);
       });
   }
 }
