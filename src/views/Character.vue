@@ -49,7 +49,7 @@
               item-text="name"
               item-value="id"
               label="武器"
-              :hint="`威力${weapons[currentWeaponId].basePotency}, 物理${weapons[currentWeaponId].physicalRatio}, 魔法${weapons[currentWeaponId].magicalRatio}, 技巧${weapons[currentWeaponId].deftRatio}`"
+              :hint="`威力${weapons[currentWeaponId].basePotency}, 物理${weapons[currentWeaponId].physicalRatio * 100}, 魔法${weapons[currentWeaponId].magicalRatio * 100}, 技巧${weapons[currentWeaponId].deftRatio * 100}`"
               persistent-hint
             )
           v-col(cols="6")
@@ -102,7 +102,6 @@ export default class Character extends Vue {
   currentWeaponId: number = 0;
   weapons = [
     {
-      id: "",
       name: "",
       description: "",
       basePotency: 0,
@@ -152,7 +151,6 @@ export default class Character extends Vue {
   currentWeaponStoneId: number = 0;
   weaponStones = [
     {
-      id: "",
       name: "",
       description: "",
       potencyRatio: 1,
@@ -168,7 +166,6 @@ export default class Character extends Vue {
   currentLanternId: number = 0;
   lanterns = [
     {
-      id: "",
       name: "",
       description: "",
       skill: {
@@ -186,7 +183,6 @@ export default class Character extends Vue {
    */
   rings = [
     {
-      id: "",
       name: "",
       description: "",
       skill: {
@@ -240,7 +236,7 @@ export default class Character extends Vue {
   }
   get criticalRate(): number {
     return (
-      this.weapons[this.currentWeaponId].deftRatio * this.deft * 0.16 +
+      this.weapons[this.currentWeaponId].deftRatio * this.deft * 0.32 +
       this.weaponStones[this.currentWeaponStoneId].criticalRate
     );
   }
