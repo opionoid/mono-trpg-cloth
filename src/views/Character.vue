@@ -44,7 +44,7 @@
         v-row(justify="center")
           v-col(cols="12" md="6")
             v-select(
-              :v-model="currentWeaponId"
+              v-model="currentWeaponId"
               :items="weapons"
               item-text="name"
               item-value="id"
@@ -53,6 +53,7 @@
               persistent-hint
             )
           v-col(cols="6")
+            h3 {{ currentWeaponId }}: {{ weapons[currentWeaponId].name }} {{ weapons[currentWeaponId].basePotency }}
         v-row(justify="center")
           v-col(cols="6")
           v-col(cols="6")
@@ -215,30 +216,31 @@ export default class Character extends Vue {
     return Math.floor(this.growthCurve(this.pow, 0.5, 0.3, 0.1, 0.1));
   }
   get physicalAttack(): number {
-    return this.growthCurve(this.str, 10, 6, 3, 1);
+    return this.growthCurve(this.str, 8, 4, 3, 1) + Math.floor(this.growthCurve(this.dex, 0.5, 0.4, 0.3, 0.2));
   }
   get magicalAttack(): number {
-    return this.growthCurve(this.pow, 8, 9, 4, 1);
+    return this.growthCurve(this.pow, 5, 8, 5, 1) + Math.floor(this.growthCurve(this.dex, 0.5, 0.4, 0.3, 0.2));
   }
   get deft(): number {
-    return this.growthCurve(this.dex, 10, 6, 3, 1);
+    return this.growthCurve(this.dex, 8, 4, 2, 1);
   }
   get parryingRate(): number {
     return Math.floor(this.growthCurve(this.dex, 0.8, 0.6, 0.2, 0.1));
   }
   get potency(): number {
-    return (
-      (this.weapons[this.currentWeaponId].basePotency +
+    return Math.floor(
+      (
+        this.weapons[this.currentWeaponId].basePotency +
         this.weapons[this.currentWeaponId].physicalRatio * this.physicalAttack +
-        this.weapons[this.currentWeaponId].magicalRatio * this.magicalAttack) *
-      this.weaponStones[this.currentWeaponStoneId].potencyRatio
+        this.weapons[this.currentWeaponId].magicalRatio * this.magicalAttack
+      ) * this.weaponStones[this.currentWeaponStoneId].potencyRatio
     );
   }
   get criticalRate(): number {
-    return (
+    return Math.floor(
       this.weapons[this.currentWeaponId].deftRatio * this.deft * 0.32 +
       this.weaponStones[this.currentWeaponStoneId].criticalRate
-    );
+    )
   }
 
   growthCurve(
@@ -273,6 +275,7 @@ export default class Character extends Vue {
           tmpWeapons.push(doc.data())
         });
         this.weapons = tmpWeapons
+        console.log(this.weapons)
       });
   }
 }
