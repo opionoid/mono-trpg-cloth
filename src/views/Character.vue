@@ -142,8 +142,61 @@ export default class Character extends Vue {
         range: 0,
         mpCost: 0,
         target: ""
+      }
+    }
+  ];
+  /**
+   * メイン武器の刻印
+   */
+  currentWeaponStoneId: number = 0;
+  weaponStones = [
+    {
+      id: 0,
+      name: "",
+      description: "",
+      potencyRatio: 1,
+      physicalRatio: 1,
+      magicRatio: 1,
+      deftRatio: 1,
+      physicalRate: 0,
+      magicRate: 0,
+      deftRate: 0,
+      skill1Ratio: 0,
+      skill2Ratio: 0,
+      skill3Ratio: 0,
+      skill1ChangedTarget: "",
+      skill2ChangedTarget: ""
+    }
+  ];
+  /**
+   * サブ武器
+   */
+  currentSubWeaponId: number = 0;
+  subWeapons = [
+    {
+      id: "",
+      name: "",
+      description: "",
+      basePotency: 0,
+      physicalRatio: 0, // 物理攻撃の，威力への反映率
+      magicRatio: 0, // 魔法攻撃の，威力への反映率
+      deftRatio: 0, // 技巧の，クリティカル率に対する 反映率
+      /**
+       * skills[] としなかったのは this.$set 等を用いずに
+       * このデータをリアクティブに扱いたかったため．
+       * また，スキル数が必ず 2 しかないため．
+       */
+      skill1: {
+        name: "",
+        description: "",
+        isPassive: false,
+        element: "",
+        potencyRatio: 0,
+        range: 0,
+        mpCost: 0,
+        target: ""
       },
-      skill3: {
+      skill2: {
         name: "",
         description: "",
         isPassive: false,
@@ -156,63 +209,26 @@ export default class Character extends Vue {
     }
   ];
   /**
-   * 紅結晶
+   * サブ武器の刻印
    */
-  currentWeaponStoneId: number = 0;
-  weaponStones = [
+  currentSubWeaponStoneId: number = 0;
+  subWeaponStones = [
     {
       id: 0,
       name: "",
       description: "",
       potencyRatio: 1,
-      skill1Ratio: 1,
-      skill2Ratio: 1,
-      skill3Ratio: 1,
-      criticalRate: 0,
-      skill1CriticalRate: 0,
-      skill2CriticalRate: 0,
-      skill3CriticalRate: 0,
-      changedTarget: "",
+      physicalRatio: 1,
+      magicRatio: 1,
+      deftRatio: 1,
+      physicalRate: 0,
+      magicRate: 0,
+      deftRate: 0,
+      skill1Ratio: 0,
+      skill2Ratio: 0,
+      skill3Ratio: 0,
       skill1ChangedTarget: "",
-      skill2ChangedTarget: "",
-      skill3ChangedTarget: ""
-    }
-  ];
-  /**
-   * ランタン
-   */
-  currentLanternId: number = 0;
-  lanterns = [
-    {
-      id: 0,
-      name: "",
-      description: "",
-      skill: {
-        name: "",
-        mpCost: 0,
-        description: ""
-      }
-    }
-  ];
-  /**
-   * 灰結晶
-   */
-  currentLanternStoneId: number = 0;
-  lanternStones = [
-    {
-      id: 0,
-      name: "",
-      description: "",
-      augmented___1: 0,
-      augmented___2: 0,
-      augmented___3: 0,
-      augmented___4: 0,
-      augmented___5: 0,
-      augmentedCrit___1: 0,
-      augmentedCrit___2: 0,
-      augmentedCrit___3: 0,
-      augmentedCrit___4: 0,
-      augmentedCrit___5: 0
+      skill2ChangedTarget: ""
     }
   ];
   /**
@@ -265,10 +281,10 @@ export default class Character extends Vue {
     return this.growthCurve(this.pow, 0.5, 0.3, 0.1, 0.1, 0.05, 0.09);
   }
   get physicalAbility(): number {
-    return this.growthCurve(this.str, 11, 8, 5, 2, 0.5, 0.91)
+    return this.growthCurve(this.str, 11, 8, 5, 2, 0.5, 0.91);
   }
   get magicAbility(): number {
-    return this.growthCurve(this.pow, 2, 20, 11, 2, 0.5, 0.91)
+    return this.growthCurve(this.pow, 2, 20, 11, 2, 0.5, 0.91);
   }
   get deft(): number {
     return this.growthCurve(this.dex, 6, 15, 8, 2, 0.5, 0.91);
@@ -278,17 +294,30 @@ export default class Character extends Vue {
   }
   get potency(): number {
     return Math.floor(
+      /** 基礎攻撃力 */
       (this.weapons[this.currentWeaponId].basePotency +
-        this.weapons[this.currentWeaponId].physicalRatio *
+        /** 物理補正 */
+        (this.weapons[this.currentWeaponId].physicalRatio *
+          this.weaponStones[this.currentWeaponStoneId].physicalRatio +
+          this.weaponStones[this.currentWeaponStoneId].physicalRate) *
           this.physicalAbility +
-        this.weapons[this.currentWeaponId].magicRatio * this.magicAbility) *
+        /** 魔法補正 */
+        (this.weapons[this.currentWeaponId].magicRatio *
+          this.weaponStones[this.currentWeaponStoneId].magicRatio +
+          this.weaponStones[this.currentWeaponStoneId].magicRate) *
+          this.magicAbility) *
+        /** 威力補正 */
         this.weaponStones[this.currentWeaponStoneId].potencyRatio
     );
   }
   get criticalRate(): number {
     return Math.floor(
-      this.weapons[this.currentWeaponId].deftRatio * this.deft * 0.24 +
-        this.weaponStones[this.currentWeaponStoneId].criticalRate
+      /** 技量補正 */
+      (this.weapons[this.currentWeaponId].deftRatio *
+        this.weaponStones[this.currentWeaponStoneId].deftRatio +
+        this.weaponStones[this.currentWeaponStoneId].deftRate) *
+        this.deft *
+        0.24
     );
   }
 
@@ -313,9 +342,9 @@ export default class Character extends Vue {
       } else if (i < 50) {
         subStatus += growthUnder50;
       } else if (i < 85) {
-        subStatus += growthUnder90
+        subStatus += growthUnder90;
       } else if (i < 99) {
-        subStatus += growthUnder99
+        subStatus += growthUnder99;
       }
     }
     return Math.floor(subStatus);
@@ -332,7 +361,7 @@ export default class Character extends Vue {
         querySnapshot.forEach(doc => {
           tmpWeapons.push(doc.data());
         });
-        this.weapons = tmpWeapons
+        this.weapons = tmpWeapons;
       });
     db.collection("weaponStones")
       .get()
@@ -341,7 +370,7 @@ export default class Character extends Vue {
         querySnapshot.forEach(doc => {
           tmpWeaponStones.push(doc.data());
         });
-        this.weaponStones = tmpWeaponStones
+        this.weaponStones = tmpWeaponStones;
       });
   }
 }
