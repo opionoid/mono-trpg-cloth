@@ -40,9 +40,9 @@
             v-col.py-1(cols="6")
               v-text-field(v-model="criticalRate" readonly outlined dense label="会心")
       //- equipment
-      v-row(justify="center")
+      v-content
         v-row(justify="center")
-          v-col(cols="12" md="6")
+          v-col(cols="12" sm="6")
             v-select(
               v-model="currentWeaponId"
               :items="weapons"
@@ -52,8 +52,16 @@
               :hint="`威力${weapons[currentWeaponId].basePotency}, 物理${weapons[currentWeaponId].physicalRatio * 100}, 魔法${weapons[currentWeaponId].magicRatio * 100}, 技巧${weapons[currentWeaponId].deftRatio * 100}`"
               persistent-hint
             )
-          v-col(cols="6")
-            h3 {{ currentWeaponId }}: {{ weapons[currentWeaponId].name }} {{ weapons[currentWeaponId].basePotency }}
+          v-col(cols="12" sm="6")
+            v-select(
+              v-model="currentWeaponStoneId"
+              :items="weaponStones"
+              item-text="name"
+              item-value="id"
+              label="付呪"
+              :hint="`${weaponStones[currentWeaponStoneId].description}`"
+              persistent-hint
+            )
         v-row(justify="center")
           v-col(cols="6")
           v-col(cols="6")
@@ -249,30 +257,24 @@ export default class Character extends Vue {
   }
 
   get HP(): number {
-    let tmpHP = this.growthCurve(this.vit, 10, 6, 3, 1);
-    tmpHP = this.growthCurve(this.str, 2, 2, 1, 1, tmpHP);
+    let tmpHP = this.growthCurve(this.vit, 50, 30, 18, 10, 6, 3);
+    tmpHP = this.growthCurve(this.str, 4.5, 1.8, 0.9, 0.9, 0.9, 1, tmpHP);
     return tmpHP;
   }
   get MP(): number {
-    return Math.floor(this.growthCurve(this.pow, 0.5, 0.3, 0.1, 0.1));
+    return this.growthCurve(this.pow, 0.5, 0.3, 0.1, 0.1, 0.05, 0.09);
   }
   get physicalAbility(): number {
-    return (
-      this.growthCurve(this.str, 8, 4, 3, 1) +
-      Math.floor(this.growthCurve(this.dex, 0.5, 0.4, 0.3, 0.2))
-    );
+    return this.growthCurve(this.str, 11, 8, 5, 2, 0.5, 0.91)
   }
   get magicAbility(): number {
-    return (
-      this.growthCurve(this.pow, 5, 8, 5, 1) +
-      Math.floor(this.growthCurve(this.dex, 0.5, 0.4, 0.3, 0.2))
-    );
+    return this.growthCurve(this.pow, 2, 20, 11, 2, 0.5, 0.91)
   }
   get deft(): number {
-    return this.growthCurve(this.dex, 8, 4, 2, 1);
+    return this.growthCurve(this.dex, 6, 15, 8, 2, 0.5, 0.91);
   }
   get parryingRate(): number {
-    return Math.floor(this.growthCurve(this.dex, 0.8, 0.6, 0.2, 0.1));
+    return this.growthCurve(this.dex, 1.2, 0.4, 0.1, 0.1, 0.1, 0.112);
   }
   get potency(): number {
     return Math.floor(
@@ -285,7 +287,7 @@ export default class Character extends Vue {
   }
   get criticalRate(): number {
     return Math.floor(
-      this.weapons[this.currentWeaponId].deftRatio * this.deft * 0.32 +
+      this.weapons[this.currentWeaponId].deftRatio * this.deft * 0.24 +
         this.weaponStones[this.currentWeaponStoneId].criticalRate
     );
   }
@@ -296,6 +298,8 @@ export default class Character extends Vue {
     growthUnder30: number,
     growthUnder40: number,
     growthUnder50: number,
+    growthUnder90: number,
+    growthUnder99: number,
     subStatus?: number
   ): number {
     subStatus ? subStatus : (subStatus = 0);
@@ -308,12 +312,19 @@ export default class Character extends Vue {
         subStatus += growthUnder40;
       } else if (i < 50) {
         subStatus += growthUnder50;
+      } else if (i < 85) {
+        subStatus += growthUnder90
+      } else if (i < 99) {
+        subStatus += growthUnder99
       }
     }
-    return subStatus;
+    return Math.floor(subStatus);
   }
 
   mounted() {
+    /**
+     * Firestore から 装備品データを読み込む
+     */
     db.collection("weapons")
       .get()
       .then(querySnapshot => {
@@ -321,8 +332,16 @@ export default class Character extends Vue {
         querySnapshot.forEach(doc => {
           tmpWeapons.push(doc.data());
         });
-        this.weapons = tmpWeapons;
-        console.log(this.weapons);
+        this.weapons = tmpWeapons
+      });
+    db.collection("weaponStones")
+      .get()
+      .then(querySnapshot => {
+        let tmpWeaponStones: any = [];
+        querySnapshot.forEach(doc => {
+          tmpWeaponStones.push(doc.data());
+        });
+        this.weaponStones = tmpWeaponStones
       });
   }
 }
