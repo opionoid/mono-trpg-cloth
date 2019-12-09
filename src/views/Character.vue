@@ -121,69 +121,6 @@ export default class Character extends Vue {
       /**
        * skills[] としなかったのは this.$set 等を用いずに
        * このデータをリアクティブに扱いたかったため．
-       * また，スキル数が必ず 3 しかないため．
-       */
-      skill1: {
-        name: "",
-        description: "",
-        isPassive: false,
-        element: "",
-        potencyRatio: 0,
-        range: 0,
-        mpCost: 0,
-        target: ""
-      },
-      skill2: {
-        name: "",
-        description: "",
-        isPassive: false,
-        element: "",
-        potencyRatio: 0,
-        range: 0,
-        mpCost: 0,
-        target: ""
-      }
-    }
-  ];
-  /**
-   * メイン武器の刻印
-   */
-  currentWeaponStoneId: number = 0;
-  weaponStones = [
-    {
-      id: 0,
-      name: "",
-      description: "",
-      potencyRatio: 1,
-      physicalRatio: 1,
-      magicRatio: 1,
-      deftRatio: 1,
-      physicalRate: 0,
-      magicRate: 0,
-      deftRate: 0,
-      skill1Ratio: 0,
-      skill2Ratio: 0,
-      skill3Ratio: 0,
-      skill1ChangedTarget: "",
-      skill2ChangedTarget: ""
-    }
-  ];
-  /**
-   * サブ武器
-   */
-  currentSubWeaponId: number = 0;
-  subWeapons = [
-    {
-      id: "",
-      name: "",
-      description: "",
-      basePotency: 0,
-      physicalRatio: 0, // 物理攻撃の，威力への反映率
-      magicRatio: 0, // 魔法攻撃の，威力への反映率
-      deftRatio: 0, // 技巧の，クリティカル率に対する 反映率
-      /**
-       * skills[] としなかったのは this.$set 等を用いずに
-       * このデータをリアクティブに扱いたかったため．
        * また，スキル数が必ず 2 しかないため．
        */
       skill1: {
@@ -209,7 +146,64 @@ export default class Character extends Vue {
     }
   ];
   /**
-   * サブ武器の刻印
+   * メイン武器の変質石
+   */
+  currentWeaponStoneId: number = 0;
+  weaponStones = [
+    {
+      id: 0,
+      name: "",
+      description: "",
+      potencyRatio: 1,
+      physicalRatio: 1,
+      magicRatio: 1,
+      deftRatio: 1,
+      physicalRate: 0,
+      magicRate: 0,
+      deftRate: 0,
+      skill1Ratio: 1,
+      skill2Ratio: 1,
+      skill1ChangedTarget: "",
+      skill2ChangedTarget: ""
+    }
+  ];
+  /**
+   * サブ武器
+   */
+  currentSubWeaponId: number = 0;
+  subWeapons = [
+    {
+      id: "",
+      name: "",
+      description: "",
+      basePotency: 0,
+      physicalRatio: 0, // 物理攻撃の，威力への反映率
+      magicRatio: 0, // 魔法攻撃の，威力への反映率
+      deftRatio: 0, // 技巧の，クリティカル率に対する 反映率
+      skill1: {
+        name: "",
+        description: "",
+        isPassive: false,
+        element: "",
+        potencyRatio: 0,
+        range: 0,
+        mpCost: 0,
+        target: ""
+      },
+      skill2: {
+        name: "",
+        description: "",
+        isPassive: false,
+        element: "",
+        potencyRatio: 0,
+        range: 0,
+        mpCost: 0,
+        target: ""
+      }
+    }
+  ];
+  /**
+   * サブ武器の変質石
    */
   currentSubWeaponStoneId: number = 0;
   subWeaponStones = [
@@ -253,10 +247,10 @@ export default class Character extends Vue {
     }
   ];
   /**
-   * 蒼結晶
+   * 指輪の刻印
    */
-  currentRingStoneId: number = 0;
-  ringStones = [
+  currentRingSignId: number = 0;
+  ringSigns = [
     {
       id: 0,
       name: "",
