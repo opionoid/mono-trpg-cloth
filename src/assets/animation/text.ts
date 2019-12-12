@@ -57,5 +57,7 @@ export class TextAnimation {
     textSprite.on("mouseleft", () => {
       textSprite.filters = [];
     });
+
+    this.app.renderer.render(this.container);
   }
 }

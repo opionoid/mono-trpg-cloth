@@ -49,7 +49,7 @@
               :items="weapons"
               item-text="name"
               item-value="id"
-              label="メイン武器"
+              label="メイン装備"
               :hint="`威力${weapons[currentWeaponId].basePotency}, 物理${weapons[currentWeaponId].physicalRatio * 100}, 魔法${weapons[currentWeaponId].magicRatio * 100}, 技巧${weapons[currentWeaponId].deftRatio * 100}`"
               persistent-hint
             )
@@ -71,7 +71,7 @@
               :items="weapons"
               item-text="name"
               item-value="id"
-              label="サブ武器"
+              label="サブ装備"
               :hint="`威力${weapons[currentSubWeaponId].basePotency}, 物理${weapons[currentSubWeaponId].physicalRatio * 100}, 魔法${weapons[currentSubWeaponId].magicRatio * 100}, 技巧${weapons[currentSubWeaponId].deftRatio * 100}`"
               persistent-hint
             )
@@ -247,7 +247,6 @@ export default class Character extends Vue {
   currentRingId: number = 0;
   currentRingSignId: number = 0;
 
-
   get level(): number {
     const level = this.vit + this.str + this.dex + this.pow;
     return level;
@@ -273,16 +272,28 @@ export default class Character extends Vue {
     return this.growthCurve(this.dex, 1.2, 0.4, 0.1, 0.1, 0.1, 0.112);
   }
   get mainPotency(): number {
-    return this.calculatePotency(this.currentWeaponId, this.currentWeaponStoneId)
+    return this.calculatePotency(
+      this.currentWeaponId,
+      this.currentWeaponStoneId
+    );
   }
   get mainCriticalRate(): number {
-    return this.calculateCriticalRate(this.currentWeaponId, this.currentWeaponStoneId)
+    return this.calculateCriticalRate(
+      this.currentWeaponId,
+      this.currentWeaponStoneId
+    );
   }
   get subPotency(): number {
-    return this.calculatePotency(this.currentSubWeaponId, this.currentSubWeaponStoneId)
+    return this.calculatePotency(
+      this.currentSubWeaponId,
+      this.currentSubWeaponStoneId
+    );
   }
   get subCriticalRate(): number {
-    return this.calculateCriticalRate(this.currentSubWeaponId, this.currentSubWeaponStoneId)
+    return this.calculateCriticalRate(
+      this.currentSubWeaponId,
+      this.currentSubWeaponStoneId
+    );
   }
 
   /** レベル帯に成長する値を入力すれば最終的なステータスが返されます */
@@ -353,38 +364,38 @@ export default class Character extends Vue {
     db.collection("weapons")
       .get()
       .then(querySnapshot => {
-        let tmp: Array<any> = []
+        let tmp: Array<any> = [];
         querySnapshot.forEach(doc => {
           tmp.push(doc.data());
         });
-        this.weapons = tmp
+        this.weapons = tmp;
       });
     db.collection("weaponStones")
       .get()
       .then(querySnapshot => {
-        let tmp: Array<any> = []
+        let tmp: Array<any> = [];
         querySnapshot.forEach(doc => {
           tmp.push(doc.data());
         });
-        this.weaponStones = tmp
+        this.weaponStones = tmp;
       });
     db.collection("rings")
       .get()
       .then(querySnapshot => {
-        let tmp: Array<any> = []
+        let tmp: Array<any> = [];
         querySnapshot.forEach(doc => {
           tmp.push(doc.data());
         });
-        this.rings = tmp
+        this.rings = tmp;
       });
     db.collection("ringSigns")
       .get()
       .then(querySnapshot => {
-        let tmp: Array<any> = []
+        let tmp: Array<any> = [];
         querySnapshot.forEach(doc => {
           tmp.push(doc.data());
         });
-        this.ringSigns = tmp
+        this.ringSigns = tmp;
       });
   }
 }
