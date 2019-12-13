@@ -4,41 +4,41 @@
       //- general info
       v-row(justify="center")
         v-col(cols="12" md="5")
-          v-text-field(v-model="name" label="名前" required)
+          v-text-field(v-model="name" label="名前" required color='#DCC09B')
         v-col(cols="4" md="2")
-          v-text-field(v-model="sex" label="性別")
+          v-text-field(v-model="sex" label="性別" color='#DCC09B')
         v-col(cols="4" md="2")
-          v-text-field(v-model="age" label="年齢")
+          v-text-field(v-model="age" label="年齢" color='#DCC09B')
         v-col(cols="4" md="3")
           .level {{ level }}
       //- status
       v-row(justify="center")
         v-col.py-1(cols="3")
-          v-text-field(v-model.number="vit" type="number" label="体力")
+          v-text-field(v-model.number="vit" type="number" label="体力" color='#DCC09B')
         v-col.py-1(cols="3")
-          v-text-field(v-model.number="str" type="number" label="筋力")
+          v-text-field(v-model.number="str" type="number" label="筋力" color='#DCC09B')
         v-col.py-1(cols="3")
-          v-text-field(v-model.number="pow" type="number" label="魔力")
+          v-text-field(v-model.number="pow" type="number" label="魔力" color='#DCC09B')
         v-col.py-1(cols="3")
-          v-text-field(v-model.number="dex" type="number" label="技量")
+          v-text-field(v-model.number="dex" type="number" label="技量" color='#DCC09B')
       v-row(justify="center")
         v-col.py-1(cols="3")
-          v-text-field(v-model="physicalAbility" readonly outlined dense label="物理")
+          v-text-field(v-model="physicalAbility" readonly outlined dense label="物理" color='#DCC09B')
         v-col.py-1(cols="3")
-          v-text-field(v-model="magicAbility" readonly outlined dense label="魔法")
+          v-text-field(v-model="magicAbility" readonly outlined dense label="魔法" color='#DCC09B')
         v-col.py-1(cols="3")
-          v-text-field(v-model="deft" readonly outlined dense label="技巧")
+          v-text-field(v-model="deft" readonly outlined dense label="技巧" color='#DCC09B')
         v-col.py-1(cols="3")
-          v-text-field(v-model="parryingRate" readonly outlined dense label="受流")
+          v-text-field(v-model="parryingRate" readonly outlined dense label="受流" color='#DCC09B')
       v-row(justify="center")
         v-col.pt-0(cols="3")
-          v-text-field(v-model="mainPotency" readonly outlined dense label="威力 - メイン")
+          v-text-field(v-model="mainPotency" readonly outlined dense label="威力 - メイン" color='#DCC09B')
         v-col.pt-0(cols="3")
-          v-text-field(v-model="mainCriticalRate" readonly outlined dense label="会心 - メイン")
+          v-text-field(v-model="mainCriticalRate" readonly outlined dense label="会心 - メイン" color='#DCC09B')
         v-col.pt-0(cols="3")
-          v-text-field(v-model="subPotency" readonly outlined dense label="威力 - サブ")
+          v-text-field(v-model="subPotency" readonly outlined dense label="威力 - サブ" color='#DCC09B')
         v-col.pt-0(cols="3")
-          v-text-field(v-model="subCriticalRate" readonly outlined dense label="会心 - サブ")
+          v-text-field(v-model="subCriticalRate" readonly outlined dense label="会心 - サブ" color='#DCC09B')
       //- equipment
       v-content
         //- main weapon
@@ -52,6 +52,8 @@
               label="メイン装備"
               :hint="`威力${weapons[currentWeaponId].basePotency}, 物理${weapons[currentWeaponId].physicalRatio * 100}, 魔法${weapons[currentWeaponId].magicRatio * 100}, 技巧${weapons[currentWeaponId].deftRatio * 100}`"
               persistent-hint
+              color='#DCC09B'
+              item-color='#DCC09B'
             )
           v-col(cols="12" sm="6")
             v-select(
@@ -62,6 +64,8 @@
               label="変質石"
               :hint="`${weaponStones[currentWeaponStoneId].description}`"
               persistent-hint
+              color='#DCC09B'
+              item-color='#DCC09B'
             )
         //- sub weapon
         v-row(justify="center")
@@ -74,6 +78,8 @@
               label="サブ装備"
               :hint="`威力${weapons[currentSubWeaponId].basePotency}, 物理${weapons[currentSubWeaponId].physicalRatio * 100}, 魔法${weapons[currentSubWeaponId].magicRatio * 100}, 技巧${weapons[currentSubWeaponId].deftRatio * 100}`"
               persistent-hint
+              color='#DCC09B'
+              item-color='#DCC09B'
             )
           v-col(cols="12" sm="6")
             v-select(
@@ -84,6 +90,8 @@
               label="変質石"
               :hint="`${weaponStones[currentSubWeaponStoneId].description}`"
               persistent-hint
+              color='#DCC09B'
+              item-color='#DCC09B'
             )
         //- ring
         v-row(justify="center")
@@ -96,6 +104,8 @@
               label="指輪"
               :hint="`${rings[currentRingId].description}`"
               persistent-hint
+              color='#DCC09B'
+              item-color='#DCC09B'
             )
           v-col(cols="12" sm="6")
             v-select(
@@ -106,6 +116,8 @@
               label="刻印"
               :hint="`${ringSigns[currentRingSignId].description}`"
               persistent-hint
+              color='#DCC09B'
+              item-color='#DCC09B'
             )
       //- battle skill
       v-row(justify="center")
