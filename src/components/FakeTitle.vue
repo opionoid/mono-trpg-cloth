@@ -9,14 +9,14 @@ import * as PIXI from "pixi.js";
 import { TweenMax } from 'gsap'
 
 export default {
-  name: "Card",
+  name: "FakeTitle",
 
   data() {
     return {
       app: null,
       renderer: null,
       container: null,
-      thumbnail: null,
+      title: null,
       filter: null
     }
   },
@@ -30,8 +30,8 @@ export default {
   mounted() {
     this.app = new PIXI.Application({
       antialias: true,
-      width: window.innerWidth,
-      height: window.innerWidth * 0.6,
+      width: 612,
+      height: 600,
       transparent: true,
       resolution: window.devicePixelRatio || 1,
       autoResize: true
@@ -42,17 +42,20 @@ export default {
     this.container = new PIXI.Container()
     this.app.stage.addChild(this.container)
 
-    const thumbnailTexture = PIXI.Texture.from("https://picsum.photos/id/1019/1920/1080")
-    this.thumbnail = new PIXI.Sprite(thumbnailTexture)
-    this.thumbnail.anchor.set(0.5)
+    this.title = new PIXI.Text("\tMONO\n\tTRPG\n\tCLOTH", {
+      //fontFamily: "ROBOTO",
+      fontWeight: "bold",
+      fontSize: 160,
+      fill: 0x837A81
+    })
 
-    const filterTexture = PIXI.Texture.from("https://picsum.photos/id/301/1920/1080")
+    const filterTexture = PIXI.Texture.from("https://picsum.photos/id/404/812/600")
     this.filter = new PIXI.filters.DisplacementFilter(new PIXI.Sprite(filterTexture))
     this.filter.scale.x = 0
     this.filter.scale.y = 0
-    this.thumbnail.filters = [this.filter]
+    this.title.filters = [this.filter]
 
-    this.container.addChild(this.thumbnail)
+    this.container.addChild(this.title)
   },
   methods: {
     filtered() {
