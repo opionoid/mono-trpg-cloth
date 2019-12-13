@@ -5,7 +5,7 @@
     Title
   v-container#about
     v-row(justify="center")
-      h2.display-3.pa-4 WHAT'S THIS?
+      h2.display-3.pa-4 WHAT'S THIS ?
     v-row(justify="center")
       p.pa-4.grey--text MONO TRPG CLOTH は，あなたが考えたTRPGのシナリオや世界観の実現を手助けします．
     v-row(justify="center")
@@ -14,19 +14,19 @@
           i.material-icons.pa-4(data-delighter) description
         v-row(justify="center")
           h4.about-title.display-1.font-weight-light.mt-2(data-delighter) Data
-          p.about-description.pa-4.grey--text(data-delighter) 武器，スキル，アビリティなど，そのままでも始められるだけのデータが揃っています．もしあなたが素晴らしいシナリオを書いて，そこに戦闘がある場合，これを利用するのが最も手軽で（しかも癖がないので）扱いやすいはずです．
+          p.about-description.mt-1.pa-4.grey--text(data-delighter) 武器，スキル，アビリティなど，そのままでも始められるだけのデータが揃っています．もしあなたが素晴らしいシナリオを書いて，そこに戦闘がある場合，これを利用するのが最も手軽で（しかも癖がないので）扱いやすいはずです．
       v-col.px-4(xs="12" md="4")
         v-row(justify="center")
           i.material-icons.pa-4(data-delighter) flash_on
         v-row(justify="center")
           h4.about-title.display-1.font-weight-light.mt-2(data-delighter) Rapid
-          p.about-description.pa-4.grey--text(data-delighter) アプリ上でキャラを作成できるだけでなく，スキルを押すだけで Discord や Slack に判定結果が通知されます．もう 1D6 を入力する必要はありません．さらにログインすれば，作ったキャラクターデータは自動で保存されます．
+          p.about-description.mt-1.pa-4.grey--text(data-delighter) アプリ上でキャラを作成できるだけでなく，スキルを押すだけで Discord や Slack に判定結果が通知されます．もう 1D6 を入力する必要はありません．さらにログインすれば，作ったキャラクターデータは自動で保存されます．
       v-col.px-4(xs="12" md="4")
         v-row(justify="center")
           i.material-icons.pa-4(data-delighter) build
         v-row(justify="center")
           h4.about-title.display-1.font-weight-light.mt-2(data-delighter) Customize
-          p.about-description.pa-4.grey--text(data-delighter) あなたが武器を増やしたり，スキルを変更したいとき，チュートリアルに沿うだけで構いません．もしもっと作り変えたくて，しかもあなたがエンジニアなら，ソースコードを全て書き換えても構いません．
+          p.about-description.mt-1.pa-4.grey--text(data-delighter) あなたが武器を増やしたり，スキルを変更したいとき，チュートリアルに沿うだけで構いません．もしもっと作り変えたくて，しかもあなたがエンジニアなら，ソースコードを全て書き換えても構いません．
     v-row.my-4.pb-4(justify="center")
       .btn(data-delighter @click="$router.push('/character')")
         span.font-weight-light MAKE
@@ -94,7 +94,7 @@ export default class Home extends Vue {}
   font-size 4px
 
 .material-icons.delighter.started
-  transform rotate(10deg)
+  transform rotate(30deg)
   font-size 140px
 
 .material-icons.delighter.started.ended

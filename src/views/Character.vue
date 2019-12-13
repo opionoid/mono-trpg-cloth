@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-container
+  v-container#character
     v-form(ref="form")
       //- general info
       v-row(justify="center")
@@ -412,3 +412,8 @@ export default class Character extends Vue {
   }
 }
 </script>
+
+<style lang="stylus" scoped>
+#character
+  padding-bottom 14vh
+</style>
