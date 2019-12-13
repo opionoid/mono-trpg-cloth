@@ -9,7 +9,7 @@ import * as PIXI from "pixi.js";
 import { TweenMax } from 'gsap'
 
 export default {
-  name: "FakeTitle",
+  name: "Title",
 
   data() {
     return {

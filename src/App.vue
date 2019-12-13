@@ -1,21 +1,17 @@
 <template lang="pug">
   v-app
     router-view
+    Footer
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import HelloWorld from "./components/HelloWorld.vue";
+import { Component, Vue } from "vue-property-decorator";
+import Footer from "@/components/Footer.vue"
 
-export default Vue.extend({
-  name: "App",
-
+@Component({
   components: {
-    HelloWorld
-  },
-
-  data: () => ({
-    //
-  })
-});
+    Footer
+  }
+})
+export default class App extends Vue {}
 </script>
