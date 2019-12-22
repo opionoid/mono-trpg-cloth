@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import Footer from "@/components/Footer.vue"
+import Footer from "@/components/Footer.vue";
 
 @Component({
   components: {

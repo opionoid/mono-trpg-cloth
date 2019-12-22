@@ -14,13 +14,13 @@
       //- status
       v-row(justify="center")
         v-col.py-1(cols="3")
-          v-text-field(v-model.number="vit" type="number" label="体力" color='#DCC09B')
+          v-text-field(v-model.number="vit" type="number" :rules="statusRules" label="体力" color='#DCC09B')
         v-col.py-1(cols="3")
-          v-text-field(v-model.number="str" type="number" label="筋力" color='#DCC09B')
+          v-text-field(v-model.number="str" type="number" :rules="statusRules" label="筋力" color='#DCC09B')
         v-col.py-1(cols="3")
-          v-text-field(v-model.number="pow" type="number" label="魔力" color='#DCC09B')
+          v-text-field(v-model.number="pow" type="number" :rules="statusRules" label="魔力" color='#DCC09B')
         v-col.py-1(cols="3")
-          v-text-field(v-model.number="dex" type="number" label="技量" color='#DCC09B')
+          v-text-field(v-model.number="dex" type="number" :rules="statusRules" label="技量" color='#DCC09B')
       v-row(justify="center")
         v-col.py-1(cols="3")
           v-text-field(v-model="physicalAbility" readonly outlined dense label="物理" color='#DCC09B')
@@ -39,6 +39,13 @@
           v-text-field(v-model="subPotency" readonly outlined dense label="威力 - サブ" color='#DCC09B')
         v-col.pt-0(cols="3")
           v-text-field(v-model="subCriticalRate" readonly outlined dense label="会心 - サブ" color='#DCC09B')
+      v-row(justify="center")
+        v-col.pt-0(xs="6" md="3")
+          v-text-field(v-model.number="currentHP" type="number" :rules="hpRules" label="HP" :hint="`MaxHP: ${HP || 0}`" persistent-hint color='#DCC09B')
+        v-col.pt-0(xs="6" md="3")
+          v-text-field(v-model.number="currentMP" type="number" :rules="mpRules" label="MP" :hint="`MaxMP: ${MP || 0}`" persistent-hint color='#DCC09B')
+        v-col.pt-0(xs="12" md="6")
+          v-text-field(v-model="note" label="メモ")
       //- equipment
       v-content
         //- main weapon
@@ -127,7 +134,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import * as initEquipmentData from '@/assets/js/initEquipmentData'
+import * as initEquipmentData from "@/assets/js/initEquipmentData";
 
 @Component
 export default class Character extends Vue {
@@ -151,6 +158,27 @@ export default class Character extends Vue {
   dex: number = 5;
   currentHP: number = this.HP;
   currentMP: number = this.MP;
+
+  /**
+   * Note
+   */
+  note: string = "";
+
+  /**
+   * Validation
+   */
+  statusRules = [
+    v => v <= 99 || "最大値は 99 です",
+    v => v >= 5 || "最低値は 5 です"
+  ];
+  hpRules = [
+    v => v <= this.HP || "最大HPを超過しています",
+    v => v >= 0 || "HPは0以上でなければなりません"
+  ];
+  mpRules = [
+    v => v <= this.MP || "最大MPを超過しています",
+    v => v >= 0 || "MPは0以上でなければなりません"
+  ];
 
   /**
    * Equipment
@@ -369,10 +397,10 @@ export default class Character extends Vue {
   }
 
   mounted() {
-    initEquipmentData.initWeaponsData(this.weapons)
-    initEquipmentData.initWeaponStonesData(this.weaponStones)
-    initEquipmentData.initRingsData(this.rings)
-    initEquipmentData.initRingSignsData(this.ringSigns)
+    initEquipmentData.initWeaponsData(this.weapons);
+    initEquipmentData.initWeaponStonesData(this.weaponStones);
+    initEquipmentData.initRingsData(this.rings);
+    initEquipmentData.initRingSignsData(this.ringSigns);
   }
 }
 </script>

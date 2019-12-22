@@ -151,7 +151,7 @@ export default class Home extends Vue {}
   opacity 0
   transform scale(0.5, 0.5)
 
-.btn::after 
+.btn::after
   content ''
   position absolute
   top 0
