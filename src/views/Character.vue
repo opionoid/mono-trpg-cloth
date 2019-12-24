@@ -46,6 +46,12 @@
           v-text-field(v-model.number="currentMP" type="number" :rules="mpRules" label="MP" :hint="`MaxMP: ${MP || 0}`" persistent-hint color='#DCC09B')
         v-col.pt-0(xs="12" md="6")
           v-text-field(v-model="note" label="メモ")
+      //- skill icons
+      v-row
+        //v-col(xs="4" md="2" @mouseover="describeSkill("main", "skill1")" @click="useSkill(weapons[currentWeaponId].skill1)")
+          //v-img(:src="weapons[currentWeaponId].skill1.icon")
+      //- current skill description
+      v-row
       //- equipment
       v-content
         //- main weapon
