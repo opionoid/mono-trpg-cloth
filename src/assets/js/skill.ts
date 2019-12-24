@@ -1,7 +1,12 @@
-export function useSkill() {
-  calculateSkillPotency()
-  sendSkillMessageBase()
-}
+export class Skill {
+  name: string;
+  description: string;
+  isPassive: boolean;
+  element: string;
+  potencyRatio: number;
+  range: number;
+  mpCost: number;
+  target: string;
 
-const calculateSkillPotency = () => {}
-const sendSkillMessageBase = () => {}
+  useSkill() {}
+}

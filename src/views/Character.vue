@@ -48,10 +48,11 @@
           v-text-field(v-model="note" label="メモ")
       //- skill icons
       v-row
-        //v-col(xs="4" md="2" @mouseover="describeSkill("main", "skill1")" @click="useSkill(weapons[currentWeaponId].skill1)")
+        //v-col(xs="4" md="2" @mouseover="currentSkill = weapons[currentWeaponId].skill1" @click="useSkill("main", weapons[currentWeaponId].skill1)")
           //v-img(:src="weapons[currentWeaponId].skill1.icon")
       //- current skill description
-      v-row
+      v-row(v-show="currentSkill")
+        
       //- equipment
       v-content
         //- main weapon
@@ -140,6 +141,8 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import * as calculate from "@/assets/js/calculate";
+import * as discord from "@/assets/js/discord";
 import * as initEquipmentData from "@/assets/js/initEquipmentData";
 
 @Component
@@ -148,6 +151,10 @@ export default class Character extends Vue {
    * Database
    */
   database: any;
+  /**
+   * discord incoming webhook url
+   */
+  url: string;
   /**
    * General Info
    */
@@ -185,6 +192,11 @@ export default class Character extends Vue {
     v => v <= this.MP || "最大MPを超過しています",
     v => v >= 0 || "MPは0以上でなければなりません"
   ];
+
+  /**
+   * current skill
+   */
+  currentSkill = null;
 
   /**
    * Equipment
@@ -298,108 +310,65 @@ export default class Character extends Vue {
     return level;
   }
   get HP(): number {
-    let tmpHP = this.growthCurve(this.vit, 50, 30, 18, 10, 6, 3);
-    tmpHP = this.growthCurve(this.str, 4.5, 1.8, 0.9, 0.9, 0.9, 1, tmpHP);
+    let tmpHP = calculate.growthCurve(this.vit, 50, 30, 18, 10, 6, 3);
+    tmpHP = calculate.growthCurve(this.str, 4.5, 1.8, 0.9, 0.9, 0.9, 1, tmpHP);
     return tmpHP;
   }
   get MP(): number {
-    return this.growthCurve(this.pow, 0.5, 0.3, 0.1, 0.1, 0.05, 0.09);
+    return calculate.growthCurve(this.pow, 0.5, 0.3, 0.1, 0.1, 0.05, 0.09);
   }
   get physicalAbility(): number {
-    return this.growthCurve(this.str, 11, 8, 5, 2, 0.5, 0.91);
+    return calculate.growthCurve(this.str, 11, 8, 5, 2, 0.5, 0.91);
   }
   get magicAbility(): number {
-    return this.growthCurve(this.pow, 2, 20, 11, 2, 0.5, 0.91);
+    return calculate.growthCurve(this.pow, 2, 20, 11, 2, 0.5, 0.91);
   }
   get deft(): number {
-    return this.growthCurve(this.dex, 6, 15, 8, 2, 0.5, 0.91);
+    return calculate.growthCurve(this.dex, 6, 15, 8, 2, 0.5, 0.91);
   }
   get parryingRate(): number {
-    return this.growthCurve(this.dex, 1.2, 0.4, 0.1, 0.1, 0.1, 0.112);
+    return calculate.growthCurve(this.dex, 1.2, 0.4, 0.1, 0.1, 0.1, 0.112);
   }
   get mainPotency(): number {
-    return this.calculatePotency(
-      this.currentWeaponId,
-      this.currentWeaponStoneId
+    return calculate.calculatePotency(
+      this.weapons[this.currentWeaponId],
+      this.weaponStones[this.currentWeaponStoneId],
+      this.physicalAbility,
+      this.magicAbility
     );
   }
   get mainCriticalRate(): number {
-    return this.calculateCriticalRate(
-      this.currentWeaponId,
-      this.currentWeaponStoneId
+    return calculate.calculateCriticalRate(
+      this.weapons[this.currentWeaponId],
+      this.weaponStones[this.currentWeaponStoneId],
+      this.deft
     );
   }
   get subPotency(): number {
-    return this.calculatePotency(
-      this.currentSubWeaponId,
-      this.currentSubWeaponStoneId
+    return calculate.calculatePotency(
+      this.weapons[this.currentSubWeaponId],
+      this.weaponStones[this.currentSubWeaponStoneId],
+      this.physicalAbility,
+      this.magicAbility
     );
   }
   get subCriticalRate(): number {
-    return this.calculateCriticalRate(
-      this.currentSubWeaponId,
-      this.currentSubWeaponStoneId
+    return calculate.calculateCriticalRate(
+      this.weapons[this.currentSubWeaponId],
+      this.weaponStones[this.currentSubWeaponStoneId],
+      this.deft
     );
   }
 
-  /** レベル帯に成長する値を入力すれば最終的なステータスが返されます */
-  growthCurve(
-    mainStatus: number,
-    growthUnder20: number,
-    growthUnder30: number,
-    growthUnder40: number,
-    growthUnder50: number,
-    growthUnder90: number,
-    growthUnder99: number,
-    subStatus?: number
-  ): number {
-    subStatus ? subStatus : (subStatus = 0);
-    for (let i = 0; i < mainStatus; i++) {
-      if (i < 20) {
-        subStatus += growthUnder20;
-      } else if (i < 30) {
-        subStatus += growthUnder30;
-      } else if (i < 40) {
-        subStatus += growthUnder40;
-      } else if (i < 50) {
-        subStatus += growthUnder50;
-      } else if (i < 85) {
-        subStatus += growthUnder90;
-      } else if (i < 99) {
-        subStatus += growthUnder99;
-      }
-    }
-    return Math.floor(subStatus);
-  }
-  /** 武器idと変質石idから，現在のステータスにおける威力を算出します */
-  calculatePotency(weaponId: number, weaponStoneId: number): number {
-    return Math.floor(
-      /** 基礎攻撃力 */
-      (this.weapons[weaponId].basePotency +
-        /** 物理補正 */
-        (this.weapons[weaponId].physicalRatio *
-          this.weaponStones[weaponStoneId].physicalRatio +
-          this.weaponStones[weaponStoneId].physicalRate) *
-          this.physicalAbility +
-        /** 魔法補正 */
-        (this.weapons[weaponId].magicRatio *
-          this.weaponStones[weaponStoneId].magicRatio +
-          this.weaponStones[weaponStoneId].magicRate) *
-          this.magicAbility) *
-        /** 威力補正 */
-        this.weaponStones[weaponStoneId].potencyRatio
-    );
-  }
-  /** 武器idと変質石idから，現在のステータスにおける会心率を算出します */
-  calculateCriticalRate(weaponId: number, weaponStoneId: number): number {
-    return Math.floor(
-      /** 技量補正 */
-      (this.weapons[weaponId].deftRatio *
-        this.weaponStones[weaponStoneId].deftRatio +
-        this.weaponStones[weaponStoneId].deftRate) *
-        this.deft *
-        0.24
-    );
+  useSkill(mainORsub: string, skill) {
+    const potency: number =
+      mainORsub === "main" ? this.mainPotency : this.subPotency;
+    const criticalRate: number =
+      mainORsub === "main" ? this.mainCriticalRate : this.subCriticalRate;
+    const isCritical: boolean = calculate.distinguishCritical(criticalRate);
+    const damage = calculate.calculateSkillDamage(skill, potency, isCritical);
+
+    discord.sendAttackMessage(skill, isCritical, damage, this.url);
   }
 
   mounted() {
