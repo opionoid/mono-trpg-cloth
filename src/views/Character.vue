@@ -291,7 +291,8 @@ export default class Character extends Vue {
     {
       id: 0,
       name: "望郷の指輪",
-      description: "誰かの思い出の品．永遠の愛が刻まれた指輪の持ち主は，思い出せぬ過去を捨て去るようにこれを外したのだろう．",
+      description:
+        "誰かの思い出の品．永遠の愛が刻まれた指輪の持ち主は，思い出せぬ過去を捨て去るようにこれを外したのだろう．",
       skill: {
         name: "永遠の輪",
         description: "自身のHPを1ターン前に戻す．",
@@ -386,9 +387,11 @@ export default class Character extends Vue {
     const criticalRate: number =
       mainORsub === "main" ? this.mainCriticalRate : this.subCriticalRate;
     const isCritical: boolean = calculate.distinguishCritical(criticalRate);
-    const damage = calculate.calculateSkillDamage(this.currentSkill, potency, isCritical);
-
-    console.log(`威力: ${potency}, Crit率: ${criticalRate}, isCrit: ${isCritical}, ダメージ: ${damage}`)
+    const damage = calculate.calculateSkillDamage(
+      this.currentSkill,
+      potency,
+      isCritical
+    );
 
     discord.sendAttackMessage(this.currentSkill, isCritical, damage);
   }

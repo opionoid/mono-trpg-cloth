@@ -1,11 +1,8 @@
 import axios from "axios";
 
-export function sendAttackMessage(
-  skill,
-  isCritical: boolean,
-  damage: number
-) {
-  const WEBHOOK_URL = "https://discordapp.com/api/webhooks/659659187189710858/mQWl7Qkj7HCnhPDYT1YqhnC8KgQMcfgO9FWi4o0cR2cpr88UUXOyhms0DIbcXlw4hYpM"
+export function sendAttackMessage(skill, isCritical: boolean, damage: number) {
+  const WEBHOOK_URL =
+    "https://discordapp.com/api/webhooks/659659187189710858/mQWl7Qkj7HCnhPDYT1YqhnC8KgQMcfgO9FWi4o0cR2cpr88UUXOyhms0DIbcXlw4hYpM";
 
   // 0, undefined, null のときはダメージを非表示にします
   let content: string;
@@ -22,7 +19,6 @@ export function sendAttackMessage(
     content: `${content}`
   };
   const messageJson = JSON.stringify(message);
-  console.log(messageJson);
 
   axios({
     method: "POST",

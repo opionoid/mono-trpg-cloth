@@ -76,11 +76,11 @@ export function calculateSkillDamage(
   isCritical: boolean
 ): number {
   if (skill.isPassive) return 0;
-  const CRITICAL_RATIO = 2
-  const baseDamage = Math.floor(potency * skill.potencyRatio / 10) * 10;
+  const CRITICAL_RATIO = 2;
+  const baseDamage = Math.floor((potency * skill.potencyRatio) / 10) * 10;
 
-  let damage = baseDamage
-  if (isCritical) damage *= CRITICAL_RATIO
+  let damage = baseDamage;
+  if (isCritical) damage *= CRITICAL_RATIO;
 
-  return damage
+  return damage;
 }
