@@ -25,7 +25,8 @@ export function initWeaponsData(weapons) {
         if (weapon.physicalRatio == null) weapon.physicalRatio = 0;
         if (weapon.skill1.description == null) weapon.skill1.description = "";
         if (weapon.skill1.element == null) weapon.skill1.element = "無";
-        if (weapon.skill1.icon == null) weapon.skill1.icon = "none";
+        if (weapon.skill1.icon == null)
+          weapon.skill1.icon = require("@/assets/images/icons/no-image.jpg");
         if (weapon.skill1.isPassive == null) weapon.skill1.isPassive = false;
         if (weapon.skill1.mpCost == null) weapon.skill1.mpCost = 0;
         if (weapon.skill1.name == null) weapon.skill1.name = "仮スキル1";
@@ -34,7 +35,8 @@ export function initWeaponsData(weapons) {
         if (weapon.skill1.target == null) weapon.skill1.target = "自身";
         if (weapon.skill2.description == null) weapon.skill2.description = "";
         if (weapon.skill2.element == null) weapon.skill2.element = "無";
-        if (weapon.skill2.icon == null) weapon.skill2.icon = "none";
+        if (weapon.skill2.icon == null)
+          weapon.skill2.icon = require("@/assets/images/icons/no-image.jpg");
         if (weapon.skill2.isPassive == null) weapon.skill2.isPassive = false;
         if (weapon.skill2.mpCost == null) weapon.skill2.mpCost = 0;
         if (weapon.skill2.name == null) weapon.skill2.name = "仮スキル2";
@@ -85,7 +87,8 @@ export function initRingsData(rings) {
         if (ring.name == null) ring.name = `仮指輪${ring.id}`;
         if (ring.skill.description == null) ring.skill.description = "";
         if (ring.skill.element == null) ring.skill.element = "無";
-        if (ring.skill2.icon == null) ring.skill.icon = "none";
+        if (ring.skill.icon == null)
+          ring.skill.icon = require("@/assets/images/icons/no-image.jpg");
         if (ring.skill.isPassive == null) ring.skill.isPassive = false;
         if (ring.skill.mpCost == null) ring.skill.mpCost = 4;
         if (ring.skill.name == null) ring.skill.name = `仮スキル`;

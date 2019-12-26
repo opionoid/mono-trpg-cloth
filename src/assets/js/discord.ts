@@ -3,17 +3,18 @@ import axios from "axios";
 export function sendAttackMessage(
   skill,
   isCritical: boolean,
-  damage: number,
-  url: string
+  damage: number
 ) {
+  const WEBHOOK_URL = "https://discordapp.com/api/webhooks/659659187189710858/mQWl7Qkj7HCnhPDYT1YqhnC8KgQMcfgO9FWi4o0cR2cpr88UUXOyhms0DIbcXlw4hYpM"
+
   // 0, undefined, null のときはダメージを非表示にします
   let content: string;
   if (damage) {
     content = isCritical
-      ? `${skill.name} -- ${skill.description}\rクリティカル！${damage}ダメージ`
-      : `${skill.name} -- ${skill.description}\r${damage}ダメージ`;
+      ? `${skill.name}\r${skill.description}\rクリティカル！${damage}ダメージ`
+      : `${skill.name}\r${skill.description}\r${damage}ダメージ`;
   } else {
-    content = `${skill.name} -- ${skill.description}`;
+    content = `${skill.name}\r${skill.description}`;
   }
 
   const message = {
@@ -25,10 +26,9 @@ export function sendAttackMessage(
 
   axios({
     method: "POST",
-    url: url,
+    url: WEBHOOK_URL,
     data: messageJson,
     headers: {
-      "Access-Controll-Allow-Headers": "Content-Type",
       "Content-Type": "application/json"
     }
   });

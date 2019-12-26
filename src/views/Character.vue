@@ -47,12 +47,27 @@
         v-col.pt-0(xs="12" md="6")
           v-text-field(v-model="note" label="メモ")
       //- skill icons
-      v-row
-        //v-col(xs="4" md="2" @mouseover="currentSkill = weapons[currentWeaponId].skill1" @click="useSkill("main", weapons[currentWeaponId].skill1)")
-          //v-img(:src="weapons[currentWeaponId].skill1.icon")
+      v-row(justify="center")
+        v-col(xs="4" md="2" @mouseover="currentSkill = weapons[currentWeaponId].skill1" @click="useSkill('main')")
+          v-img(:src="weapons[currentWeaponId].skill1.icon")
+        v-col(xs="4" md="2" @mouseover="currentSkill = weapons[currentWeaponId].skill2" @click="useSkill('main')")
+          v-img(:src="weapons[currentWeaponId].skill2.icon")
+        v-col(xs="4" md="2" @mouseover="currentSkill = weapons[currentSubWeaponId].skill1" @click="useSkill('sub')")
+          v-img(:src="weapons[currentSubWeaponId].skill1.icon")
+        v-col(xs="4" md="2" @mouseover="currentSkill = weapons[currentSubWeaponId].skill2" @click="useSkill('sub')")
+          v-img(:src="weapons[currentSubWeaponId].skill2.icon")
+        v-col(xs="4" md="2" @mouseover="currentSkill = rings[currentRingId].skill" @click="useSkill('main', rings[currentRingId].skill)")
+          v-img(:src="rings[currentRingId].skill.icon")
       //- current skill description
-      v-row(v-show="currentSkill")
-        
+      #current-skill(v-show="currentSkill")
+        v-row {{ currentSkill.name }}
+        v-row(justify="center" v-show="!currentSkill.isPassive")
+          v-col(cols="2") 威力 {{ currentSkill.potencyRatio * 100 }}
+          v-col(cols="2") 射程 {{ currentSkill.range }}
+          v-col(cols="2") 消費 {{ currentSkill.mpCost }}
+          v-col(cols="2") 属性 {{ currentSkill.element }}
+          v-col(cols="2") 対象 {{ currentSkill.target }}
+        v-row {{ currentSkill.description }}
       //- equipment
       v-content
         //- main weapon
@@ -152,10 +167,6 @@ export default class Character extends Vue {
    */
   database: any;
   /**
-   * discord incoming webhook url
-   */
-  url: string;
-  /**
    * General Info
    */
   name: string = "";
@@ -196,7 +207,16 @@ export default class Character extends Vue {
   /**
    * current skill
    */
-  currentSkill = null;
+  currentSkill = {
+    name: "",
+    description: "",
+    isPassive: false,
+    element: "",
+    potencyRatio: 0,
+    range: 0,
+    mpCost: 0,
+    target: ""
+  };
 
   /**
    * Equipment
@@ -209,7 +229,7 @@ export default class Character extends Vue {
    */
   weapons = [
     {
-      id: "",
+      id: 0,
       name: "",
       description: "",
       basePotency: 0,
@@ -360,15 +380,17 @@ export default class Character extends Vue {
     );
   }
 
-  useSkill(mainORsub: string, skill) {
+  useSkill(mainORsub: string) {
     const potency: number =
       mainORsub === "main" ? this.mainPotency : this.subPotency;
     const criticalRate: number =
       mainORsub === "main" ? this.mainCriticalRate : this.subCriticalRate;
     const isCritical: boolean = calculate.distinguishCritical(criticalRate);
-    const damage = calculate.calculateSkillDamage(skill, potency, isCritical);
+    const damage = calculate.calculateSkillDamage(this.currentSkill, potency, isCritical);
 
-    discord.sendAttackMessage(skill, isCritical, damage, this.url);
+    console.log(`威力: ${potency}, Crit率: ${criticalRate}, isCrit: ${isCritical}, ダメージ: ${damage}`)
+
+    discord.sendAttackMessage(this.currentSkill, isCritical, damage);
   }
 
   mounted() {
