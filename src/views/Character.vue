@@ -230,12 +230,12 @@ export default class Character extends Vue {
   weapons = [
     {
       id: 0,
-      name: "",
+      name: "流刑人の鉈",
       description: "",
-      basePotency: 0,
-      physicalRatio: 0, // 物理攻撃の，威力への反映率
+      basePotency: 300,
+      physicalRatio: 0.5, // 物理攻撃の，威力への反映率
       magicRatio: 0, // 魔法攻撃の，威力への反映率
-      deftRatio: 0, // 技巧の，クリティカル率に対する 反映率
+      deftRatio: 0.1, // 技巧の，クリティカル率に対する 反映率
       /**
        * skills[] としなかったのは this.$set 等を用いずに
        * このデータをリアクティブに扱いたかったため．
@@ -269,10 +269,10 @@ export default class Character extends Vue {
   weaponStones = [
     {
       id: 0,
-      name: "",
-      description: "",
+      name: "異人",
+      description: "威力+10%，攻撃スキルを範囲化",
       potencyRatio: 1,
-      physicalRatio: 1,
+      physicalRatio: 1.1,
       magicRatio: 1,
       deftRatio: 1,
       physicalRate: 0,
@@ -280,8 +280,8 @@ export default class Character extends Vue {
       deftRate: 0,
       skill1Ratio: 1,
       skill2Ratio: 1,
-      skill1ChangedTarget: "",
-      skill2ChangedTarget: ""
+      skill1ChangedTarget: "範囲",
+      skill2ChangedTarget: "範囲"
     }
   ];
   /**
@@ -290,17 +290,17 @@ export default class Character extends Vue {
   rings = [
     {
       id: 0,
-      name: "",
-      description: "",
+      name: "望郷の指輪",
+      description: "誰かの思い出の品．永遠の愛が刻まれた指輪の持ち主は，思い出せぬ過去を捨て去るようにこれを外したのだろう．",
       skill: {
-        name: "",
-        description: "",
+        name: "永遠の輪",
+        description: "自身のHPを1ターン前に戻す．",
         isPassive: false,
-        element: "",
+        element: "無",
         potencyRatio: 0,
         range: 0,
-        mpCost: 0,
-        target: ""
+        mpCost: 4,
+        target: "自身"
       }
     }
   ];
@@ -310,8 +310,8 @@ export default class Character extends Vue {
   ringSigns = [
     {
       id: 0,
-      name: "",
-      description: ""
+      name: "久遠",
+      description: "MPを支払えない時，MP1/HP100 の割合で代替してもよい．"
     }
   ];
 
