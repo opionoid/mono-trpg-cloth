@@ -47,27 +47,28 @@
         v-col.pt-0(xs="12" md="6")
           v-text-field(v-model="note" label="メモ")
       //- skill icons
-      v-row(justify="center")
+      v-row.mt-2(justify="center")
         v-col(xs="4" md="2" @mouseover="currentSkill = weapons[currentWeaponId].skill1" @click="useSkill('main')")
-          v-img(:src="weapons[currentWeaponId].skill1.icon")
+          v-img(:src="weapons[currentWeaponId].skill1.icon" height="100" width="100")
         v-col(xs="4" md="2" @mouseover="currentSkill = weapons[currentWeaponId].skill2" @click="useSkill('main')")
-          v-img(:src="weapons[currentWeaponId].skill2.icon")
+          v-img(:src="weapons[currentWeaponId].skill2.icon" height="100" width="100")
         v-col(xs="4" md="2" @mouseover="currentSkill = weapons[currentSubWeaponId].skill1" @click="useSkill('sub')")
-          v-img(:src="weapons[currentSubWeaponId].skill1.icon")
+          v-img(:src="weapons[currentSubWeaponId].skill1.icon" height="100" width="100")
         v-col(xs="4" md="2" @mouseover="currentSkill = weapons[currentSubWeaponId].skill2" @click="useSkill('sub')")
-          v-img(:src="weapons[currentSubWeaponId].skill2.icon")
+          v-img(:src="weapons[currentSubWeaponId].skill2.icon" height="100" width="100")
         v-col(xs="4" md="2" @mouseover="currentSkill = rings[currentRingId].skill" @click="useSkill('main', rings[currentRingId].skill)")
-          v-img(:src="rings[currentRingId].skill.icon")
+          v-img(:src="rings[currentRingId].skill.icon" height="100" width="100")
       //- current skill description
-      #current-skill(v-show="currentSkill")
-        v-row {{ currentSkill.name }}
-        v-row(justify="center" v-show="!currentSkill.isPassive")
-          v-col(cols="2") 威力 {{ currentSkill.potencyRatio * 100 }}
-          v-col(cols="2") 射程 {{ currentSkill.range }}
-          v-col(cols="2") 消費 {{ currentSkill.mpCost }}
-          v-col(cols="2") 属性 {{ currentSkill.element }}
-          v-col(cols="2") 対象 {{ currentSkill.target }}
-        v-row {{ currentSkill.description }}
+      v-card.ma-4(v-show="currentSkill" outlined elevation-10)
+        v-card-title.mt-2.ml-2.pb-0 {{ currentSkill.name }}
+        v-card-subtitle.mt-1.ml-2.pb-0 {{ currentSkill.description }}
+        v-card-text.mt-2.ml-2(justify="center" v-show="!currentSkill.isPassive")  
+          v-chip-group
+            v-chip 威力 {{ currentSkill.potencyRatio * 100 }}
+            v-chip 射程 {{ currentSkill.range }}
+            v-chip 消費 {{ currentSkill.mpCost }}
+            v-chip 属性 {{ currentSkill.element }}
+            v-chip 対象 {{ currentSkill.target }}
       //- equipment
       v-content
         //- main weapon
